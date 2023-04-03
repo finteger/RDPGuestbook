@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.yellow,
       ),
       onGenerateRoute: route.controller,
-      initialRoute: route.home,
+      initialRoute: route.authGate,
     );
   }
 }
