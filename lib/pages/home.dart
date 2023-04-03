@@ -4,6 +4,7 @@ import 'package:newproject1/route/route.dart' as route;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -67,6 +68,12 @@ class _HomeState extends State<Home> {
           IconButton(
             icon: const Icon(Icons.info),
             onPressed: null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            },
           ),
         ],
       ),
@@ -172,11 +179,17 @@ class _HomeState extends State<Home> {
                         leading: Text(data['guest_name'],
                             style: TextStyle(
                                 fontWeight: FontWeight.w900, fontSize: 18)),
-                        title: Padding(
-                          padding: const EdgeInsets.only(left: 28.0),
-                          child: Text(data['message']),
-                        ), // 👈 Your valid data here
-                      ),
+                        title: Text(
+                          data['message'],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              background: Paint()
+                                ..color = Color.fromARGB(255, 110, 201, 244)
+                                ..strokeWidth = 30
+                                ..style = PaintingStyle.stroke),
+                          textAlign: TextAlign.center,
+                        ),
+                      ), // 👈 Your valid data here
                     );
                   }).toList());
             },
@@ -301,6 +314,9 @@ class _HomeState extends State<Home> {
                         onPressed: () {
                           addGuestPost();
                           Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Message sent to database!')));
                         })
                   ],
                 );
