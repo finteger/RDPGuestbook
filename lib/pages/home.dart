@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:guestbook/route/route.dart' as route;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -36,7 +38,7 @@ class _HomeState extends State<Home> {
         .add({
           'guest_name': myController1.text,
           'message': myController2.text,
-          'created': FieldValue.serverTimestamp(),
+          'created': DateTime.now(),
         })
         .then((value) => print("Guest & message added"))
         .catchError((error) => print("Failed to add guest & message: $error"));
@@ -61,8 +63,13 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const FlutterLogo(
-          size: 54,
+        title: Row(
+          children: [
+            const FlutterLogo(
+              size: 54,
+            ),
+            Text('lutter dev')
+          ],
         ),
         actions: <Widget>[
           IconButton(
@@ -87,186 +94,211 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          if (sizeHeight >
-              800) //if state to show carousel if certain media height
-            CarouselSlider(
-              options: CarouselOptions(
-                  enlargeCenterPage: true,
-                  height: 300.0,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.blue,
+              Color.fromARGB(255, 2, 47, 84),
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            if (sizeHeight > 800)
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 280.0,
                   autoPlay: true,
                   autoPlayInterval: Duration(seconds: 3),
                   autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn),
-              items: [
-                Stack(children: [
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: true,
+                  enlargeFactor: 0.3,
+                ),
+                items: [
+                  Stack(children: [
+                    Container(
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(18.0)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                spreadRadius: 15,
+                                blurRadius: 17,
+                                offset:
+                                    Offset(0, 7), // changes position of shadow
+                              ),
+                            ],
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/download.png'),
+                              fit: BoxFit.cover,
+                            ))),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          AnimatedTextKit(
+                            animatedTexts: [
+                              TypewriterAnimatedText(
+                                'When you get here, you understand.',
+                                textStyle: const TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.yellow,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                speed: const Duration(milliseconds: 200),
+                              ),
+                            ],
+                            totalRepeatCount: 4,
+                            pause: const Duration(milliseconds: 1000),
+                            displayFullTextOnTap: true,
+                            stopPauseOnTap: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
                   Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(18.0)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.5),
-                              spreadRadius: 15,
-                              blurRadius: 17,
-                              offset:
-                                  Offset(0, 7), // changes position of shadow
-                            ),
-                          ],
+                          border:
+                              Border.all(color: Colors.blue.withOpacity(.50)),
                           image: DecorationImage(
-                            image: AssetImage('assets/images/download.png'),
+                            image: AssetImage('assets/images/business.jpg'),
+                            fit: BoxFit.fitHeight,
+                          ))),
+                  Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(18.0)),
+                          border:
+                              Border.all(color: Colors.blue.withOpacity(.50)),
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/nursing.jpg'),
                             fit: BoxFit.cover,
                           ))),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        AnimatedTextKit(
-                          animatedTexts: [
-                            TypewriterAnimatedText(
-                              'When you get here, you understand.',
-                              textStyle: const TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.yellow,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              speed: const Duration(milliseconds: 200),
-                            ),
-                          ],
-                          totalRepeatCount: 4,
-                          pause: const Duration(milliseconds: 1000),
-                          displayFullTextOnTap: true,
-                          stopPauseOnTap: false,
-                        ),
-                      ],
-                    ),
-                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(18.0)),
+                          border:
+                              Border.all(color: Colors.blue.withOpacity(.50)),
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/software.jpg'),
+                            fit: BoxFit.cover,
+                          ))),
+                  Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(18.0)),
+                          border:
+                              Border.all(color: Colors.blue.withOpacity(.50)),
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/engineer.jpg'),
+                            fit: BoxFit.cover,
+                          ))),
+                ],
+              ),
+            if (sizeHeight > 800)
+              Container(
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                      color: Colors.blue,
+                      blurRadius: 2,
+                      offset: Offset(1.0, 1.0))
                 ]),
-                Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(18.0)),
-                        border: Border.all(color: Colors.white),
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/business.jpg'),
-                          fit: BoxFit.fitHeight,
-                        ))),
-                Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(18.0)),
-                        border: Border.all(color: Colors.white),
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/nursing.jpg'),
-                          fit: BoxFit.cover,
-                        ))),
-                Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(18.0)),
-                        border: Border.all(color: Colors.white),
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/software.jpg'),
-                          fit: BoxFit.cover,
-                        ))),
-                Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(18.0)),
-                        border: Border.all(color: Colors.white),
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/engineer.jpg'),
-                          fit: BoxFit.cover,
-                        ))),
-              ],
-            ),
-          Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue,
-                  blurRadius: 2,
-                  offset: Offset(1, 1), // Shadow position
-                ),
-              ],
-            ),
-            height: 70,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(
-                Icons.history_edu,
-                size: 53,
-                color: Colors.white,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Text('RDP Guestbook',
-                  style: TextStyle(
+                height: 45,
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Icon(
+                    Icons.history_edu,
+                    size: 40,
                     color: Colors.white,
-                    fontSize: 28,
-                  ))
-            ]),
-          ),
-          Center(
-              child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('guests') // 👈 Your desired collection name here
-                .snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return const Text('Something went wrong');
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text("Loading...");
-              }
-              return SizedBox(
-                height: 350,
-                child: ListView(
-                    scrollDirection: Axis
-                        .vertical, //This makes the listview scrollable in a sizexbox
-                    shrinkWrap: true,
-                    children:
-                        snapshot.data!.docs.map((DocumentSnapshot document) {
-                      Map<String, dynamic> data =
-                          document.data()! as Map<String, dynamic>;
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          leading: Text(data['guest_name'],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w900, fontSize: 18)),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Column(
+                  ),
+                  SizedBox(
+                    width: 12,
+                  ),
+                  Text('RDP Guestbook',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ))
+                ]),
+              ),
+            Center(
+                child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('guests') // 👈 Your desired collection name here
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("Loading...");
+                }
+                return Scrollbar(
+                    thumbVisibility: true,
+                    thickness: 8,
+                    radius: Radius.circular(23),
+                    child: SizedBox(
+                      height: 350,
+                      child: ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          children: snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data()! as Map<String, dynamic>;
+
+                            final firestoreTimestamp =
+                                data['created'] as Timestamp;
+                            final dateTime = firestoreTimestamp.toDate();
+                            final timeAgo =
+                                timeago.format(dateTime, locale: 'en_short');
+
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                leading: Text('➥' + ' ' + data['guest_name'],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 18,
+                                        color: Colors.white)),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
                                       data['message'],
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          background: Paint()
-                                            ..color =
-                                                Colors.blue.withOpacity(0.5)
-                                            ..strokeWidth = 30
-                                            ..style = PaintingStyle.stroke
-                                            ..strokeJoin = StrokeJoin.round
-                                            ..strokeCap = StrokeCap.round),
+                                        fontWeight: FontWeight.bold,
+                                        background: Paint()
+                                          ..color = Colors.blue.withOpacity(0.3)
+                                          ..strokeWidth = 30
+                                          ..style = PaintingStyle.stroke
+                                          ..strokeJoin = StrokeJoin.round
+                                          ..strokeCap = StrokeCap.round,
+                                      ),
                                       textAlign: TextAlign.center,
                                     ),
+                                    Icon(Icons.format_quote,
+                                        size: 34, color: Colors.blue),
                                   ],
                                 ),
+                                trailing: Text(timeAgo,
+                                    style: TextStyle(color: Colors.white)),
                               ),
-                              Icon(Icons.format_quote,
-                                  size: 34, color: Colors.blue),
-                            ],
-                          ),
-                        ), // 👈 Your valid data here
-                      );
-                    }).toList()),
-              );
-            },
-          ))
-        ],
+                            );
+                          }).toList()),
+                    ));
+              },
+            ))
+          ],
+        ),
       ),
       drawer: Drawer(
         backgroundColor: Colors.red,
@@ -343,23 +375,20 @@ class _HomeState extends State<Home> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    //Adding borderradiusto AlertDialog
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  backgroundColor: Colors.lightBlue,
                   title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Icon(
                           Icons.edit,
                           size: 45,
-                          color: Colors.blue,
+                          color: Colors.white,
                         ),
                         SizedBox(
                           width: 16,
                         ),
                         Text('Leave a Message',
-                            style: TextStyle(fontSize: 28, color: Colors.blue))
+                            style: TextStyle(fontSize: 28, color: Colors.white))
                       ]),
                   content: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -369,12 +398,11 @@ class _HomeState extends State<Home> {
                           children: <Widget>[
                             TextFormField(
                               inputFormatters: [
-                                new LengthLimitingTextInputFormatter(
-                                    12), //Limit length of name input
+                                new LengthLimitingTextInputFormatter(9)
                               ],
                               controller: myController1,
                               decoration: InputDecoration(
-                                labelText: 'Name',
+                                labelText: ' First Name',
                                 icon: Icon(Icons.account_box),
                               ),
                             ),
@@ -382,10 +410,12 @@ class _HomeState extends State<Home> {
                               height: 50,
                             ),
                             TextFormField(
-                              maxLines: 6,
+                              inputFormatters: [
+                                new LengthLimitingTextInputFormatter(18)
+                              ],
+                              maxLines: 8,
                               controller: myController2,
                               decoration: InputDecoration(
-                                focusColor: Colors.white,
                                 labelText: 'Message',
                                 icon: Icon(Icons.message),
                                 border: OutlineInputBorder(
@@ -415,18 +445,19 @@ class _HomeState extends State<Home> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blue,
         currentIndex: 0,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, color: Colors.white),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.pageview, color: Colors.blue),
+            icon: Icon(Icons.pageview, color: Colors.white),
             label: 'About Us',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.pageview, color: Colors.blue),
+            icon: Icon(Icons.pageview, color: Colors.white),
             label: 'Contact Us',
           ),
         ],
@@ -451,27 +482,23 @@ class _HomeState extends State<Home> {
   }
 }
 
-//Shows Alertdialog when the info button is pressed in the appBar
 showAlertDialog(BuildContext context) {
-  // set up the button
   Widget okButton = TextButton(
-    child: Text("OK"),
+    child: Text('OK'),
     onPressed: () {
       Navigator.of(context).pop();
     },
   );
 
-  // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("Info"),
+    title: Text('Info'),
     content: Text(
-        "This was app developed in the Mobile App Development course.  It connects to a Firebase Firestore back-end and uses Firebase Auth for authentication."),
+        "This app was developed in the Mobile Application course.  It connect to a Firebase back-end and used Firebase Auth for authentication."),
     actions: [
       okButton,
     ],
   );
 
-  // show the dialog
   showDialog(
     context: context,
     builder: (BuildContext context) {
