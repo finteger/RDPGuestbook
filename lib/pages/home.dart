@@ -7,7 +7,6 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -63,11 +62,11 @@ class _HomeState extends State<Home> {
 
     final ValueNotifier<bool> hasNewDocument = ValueNotifier<bool>(false);
 
-// Create a stream of snapshots from the Firestore collection
+    //Create a stream of snapshots from the Firestore collection
     Stream<QuerySnapshot> guestsStream =
         FirebaseFirestore.instance.collection('guests').snapshots();
 
-// Listen to the stream and update the ValueNotifier when a new document is added
+    //Listen to the stream and update the ValueNotifier when a new document is added
     guestsStream.listen((QuerySnapshot snapshot) {
       if (snapshot.docChanges.isNotEmpty) {
         final now = DateTime.now();
@@ -76,6 +75,7 @@ class _HomeState extends State<Home> {
             (change.doc.data() as Map<String, dynamic>)['created']
                 .toDate()
                 .isAfter(last10Seconds));
+
         if (addedLast10Seconds) {
           hasNewDocument.value = true;
         }
@@ -89,34 +89,30 @@ class _HomeState extends State<Home> {
             const FlutterLogo(
               size: 54,
             ),
-            Text('lutter dev')
+            Text('lutter dev'),
           ],
         ),
         actions: <Widget>[
           AnimatedBuilder(
-            animation: hasNewDocument,
-            builder: (BuildContext context, Widget? child) {
-              return TextButton.icon(
-                label: hasNewDocument.value != false
-                    ? Text('NEW',
-                        style: TextStyle(color: Colors.white, fontSize: 10))
-                    : Text(''),
-                icon: Icon(Icons.add_alert,
-                    size: hasNewDocument.value ? 28 : 25,
-                    color: hasNewDocument.value
-                        ? Colors.red
-                        : Colors
-                            .blue), // Change color based on the state of the ValueNotifier
-
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This is a snackbar')));
-                  hasNewDocument.value =
-                      false; // Reset the ValueNotifier after the IconButton is pressed
-                },
-              );
-            },
-          ),
+              animation: hasNewDocument,
+              builder: (BuildContext context, Widget? child) {
+                return TextButton.icon(
+                  label: hasNewDocument.value != false
+                      ? Text('NEW',
+                          style: TextStyle(color: Colors.white, fontSize: 10))
+                      : Text(''),
+                  icon: Icon(Icons.add_alert,
+                      size: hasNewDocument.value != false ? 28 : 25,
+                      color: hasNewDocument.value != false
+                          ? Colors.red
+                          : Colors.blue),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('This is a snackbar')));
+                    hasNewDocument.value = false;
+                  },
+                );
+              }),
           IconButton(
             icon: const Icon(Icons.info),
             onPressed: () {
@@ -133,15 +129,14 @@ class _HomeState extends State<Home> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Colors.blue,
-              Color.fromARGB(255, 2, 47, 84),
-            ],
-          ),
-        ),
+            gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Colors.blue,
+            Color.fromARGB(255, 2, 47, 84),
+          ],
+        )),
         child: Column(
           children: [
             if (sizeHeight > 800)
@@ -204,7 +199,7 @@ class _HomeState extends State<Home> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(18.0)),
                           border:
-                              Border.all(color: Colors.blue.withOpacity(.50)),
+                              Border.all(color: Colors.blue.withOpacity(.5)),
                           image: DecorationImage(
                             image: AssetImage('assets/images/business.jpg'),
                             fit: BoxFit.fitHeight,
@@ -213,7 +208,7 @@ class _HomeState extends State<Home> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(18.0)),
                           border:
-                              Border.all(color: Colors.blue.withOpacity(.50)),
+                              Border.all(color: Colors.blue.withOpacity(.5)),
                           image: DecorationImage(
                             image: AssetImage('assets/images/nursing.jpg'),
                             fit: BoxFit.cover,
@@ -222,7 +217,7 @@ class _HomeState extends State<Home> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(18.0)),
                           border:
-                              Border.all(color: Colors.blue.withOpacity(.50)),
+                              Border.all(color: Colors.blue.withOpacity(.5)),
                           image: DecorationImage(
                             image: AssetImage('assets/images/software.jpg'),
                             fit: BoxFit.cover,
@@ -231,7 +226,7 @@ class _HomeState extends State<Home> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(18.0)),
                           border:
-                              Border.all(color: Colors.blue.withOpacity(.50)),
+                              Border.all(color: Colors.blue.withOpacity(.5)),
                           image: DecorationImage(
                             image: AssetImage('assets/images/engineer.jpg'),
                             fit: BoxFit.cover,
@@ -246,7 +241,7 @@ class _HomeState extends State<Home> {
                       blurRadius: 2,
                       offset: Offset(1.0, 1.0))
                 ]),
-                height: 45,
+                height: 40,
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(
@@ -261,7 +256,6 @@ class _HomeState extends State<Home> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
                       ))
                 ]),
               ),
@@ -283,7 +277,7 @@ class _HomeState extends State<Home> {
                     thickness: 8,
                     radius: Radius.circular(23),
                     child: SizedBox(
-                      height: 380,
+                      height: 401,
                       child: ListView(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
@@ -299,37 +293,37 @@ class _HomeState extends State<Home> {
                                 timeago.format(dateTime, locale: 'en_short');
 
                             return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListTile(
-                                leading: Text('➥' + ' ' + data['guest_name'],
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 18,
-                                        color: Colors.white)),
-                                title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      data['message'],
+                                padding: const EdgeInsets.all(8.0),
+                                child: ListTile(
+                                  leading: Text(data['guest_name'],
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        background: Paint()
-                                          ..color = Colors.blue.withOpacity(0.3)
-                                          ..strokeWidth = 30
-                                          ..style = PaintingStyle.stroke
-                                          ..strokeJoin = StrokeJoin.round
-                                          ..strokeCap = StrokeCap.round,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 18)),
+                                  title: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        data['message'],
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          background: Paint()
+                                            ..color =
+                                                Colors.blue.withOpacity(0.3)
+                                            ..strokeWidth = 30
+                                            ..style = PaintingStyle.stroke
+                                            ..strokeJoin = StrokeJoin.round
+                                            ..strokeCap = StrokeCap.round,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Icon(Icons.format_quote,
-                                        size: 34, color: Colors.blue),
-                                  ],
-                                ),
-                                trailing: Text(timeAgo,
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                            );
+                                      Icon(Icons.format_quote,
+                                          size: 34, color: Colors.blue),
+                                    ],
+                                  ),
+                                  trailing: Text(timeAgo,
+                                      style: TextStyle(color: Colors.white)),
+                                ));
                           }).toList()),
                     ));
               },
@@ -530,7 +524,7 @@ showAlertDialog(BuildContext context) {
   AlertDialog alert = AlertDialog(
     title: Text('Info'),
     content: Text(
-        "This app was developed in the Mobile Application course.  It connect to a Firebase back-end and used Firebase Auth for authentication."),
+        "This app was developed in the Mobile Application course.  It connects to a Firebase back-end and uses Firebase Auth for authentication."),
     actions: [
       okButton,
     ],
