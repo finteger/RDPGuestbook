@@ -61,6 +61,27 @@ class _HomeState extends State<Home> {
     double sizeHeight = MediaQuery.of(context).size.height;
     double sizeWidth = MediaQuery.of(context).size.width;
 
+    final ValueNotifier<bool> hasNewDocument = ValueNotifier<bool>(false);
+
+// Create a stream of snapshots from the Firestore collection
+    Stream<QuerySnapshot> guestsStream =
+        FirebaseFirestore.instance.collection('guests').snapshots();
+
+// Listen to the stream and update the ValueNotifier when a new document is added
+    guestsStream.listen((QuerySnapshot snapshot) {
+      if (snapshot.docChanges.isNotEmpty) {
+        final now = DateTime.now();
+        final last10Seconds = now.subtract(Duration(seconds: 10));
+        final addedLast10Seconds = snapshot.docChanges.any((change) =>
+            (change.doc.data() as Map<String, dynamic>)['created']
+                .toDate()
+                .isAfter(last10Seconds));
+        if (addedLast10Seconds) {
+          hasNewDocument.value = true;
+        }
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -72,12 +93,28 @@ class _HomeState extends State<Home> {
           ],
         ),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.add_alert),
-            tooltip: 'Show Snackbar',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('This is a snackbar')));
+          AnimatedBuilder(
+            animation: hasNewDocument,
+            builder: (BuildContext context, Widget? child) {
+              return TextButton.icon(
+                label: hasNewDocument.value != false
+                    ? Text('NEW',
+                        style: TextStyle(color: Colors.white, fontSize: 10))
+                    : Text(''),
+                icon: Icon(Icons.add_alert,
+                    size: hasNewDocument.value ? 28 : 25,
+                    color: hasNewDocument.value
+                        ? Colors.red
+                        : Colors
+                            .blue), // Change color based on the state of the ValueNotifier
+
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('This is a snackbar')));
+                  hasNewDocument.value =
+                      false; // Reset the ValueNotifier after the IconButton is pressed
+                },
+              );
             },
           ),
           IconButton(
@@ -246,7 +283,7 @@ class _HomeState extends State<Home> {
                     thickness: 8,
                     radius: Radius.circular(23),
                     child: SizedBox(
-                      height: 350,
+                      height: 380,
                       child: ListView(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
